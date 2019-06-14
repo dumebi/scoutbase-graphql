@@ -1,0 +1,13 @@
+# Node
+node_modules
+yarn.lock
+yarn-error.log
+
+# Mac specific
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
