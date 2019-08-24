@@ -1,4 +1,6 @@
-async function feed(parent, args, context) {
+const { getUser } = require('../utils')
+
+async function movies(parent, args, context) {
   const where = args.filter
     ? {
         OR: [
@@ -8,24 +10,38 @@ async function feed(parent, args, context) {
       }
     : {}
 
-  const links = await context.prisma.links({
+  const movies = await context.prisma.movies({
     where,
     skip: args.skip,
     first: args.first,
     orderBy: args.orderBy,
   })
-  const count = await context.prisma
-    .linksConnection({
-      where,
-    })
-    .aggregate()
-    .count()
-  return {
-    links,
-    count,
-  }
+
+  const user = await getUser(context)
+
+  console.log(user)
+  return movies.map(movie => ({
+    ...movie,
+    scoutbase_rating: user.status ? getRndInteger(5, 9) : null 
+  }))
 }
 
+async function directors(parent, args, context) {
+  return context.prisma.directors()
+}
+
+async function actors(parent, args, context) {
+  return context.prisma.actors()
+}
+
+
+function getRndInteger(min, max) {
+  return (Math.random() * (max - min + 1) + min).toFixed(1);
+}
+
+
 module.exports = {
-  feed,
+  movies,
+  directors,
+  actors
 }

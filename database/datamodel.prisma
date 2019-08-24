@@ -1,0 +1,28 @@
+type User {
+  id: ID! @id
+  name: String! @unique
+  password: String!
+}
+
+type Actor {
+  id: ID! @id
+  name: String!
+  birthday: String!
+  country: String!
+  directors: [Director!]!
+}
+
+type Director {
+  id: ID! @id
+  name: String!
+  birthday: String!
+  country: String!
+}
+
+type Movie {
+  id: ID! @id
+  title: String!
+  year: Int!
+  rating: Float!
+  actors: [Actor!]!
+}

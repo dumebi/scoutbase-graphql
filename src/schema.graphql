@@ -1,26 +1,42 @@
+directive @isAuthenticated on FIELD | FIELD_DEFINITION
+
 type Query {
   info: String!
-  feed(filter: String, skip: Int, first: Int, orderBy: LinkOrderByInput): Feed!
-}
-
-type Feed {
-  links: [Link!]!
-  count: Int!
+  movies: [Movie!]!
+  actors: [Actor!]!
+  directors: [Director!]!
 }
 
 type Mutation {
-  post(url: String!, description: String!): Link!
-  signup(email: String!, password: String!, name: String!): AuthPayload
-  login(email: String!, password: String!): AuthPayload
-  vote(linkId: ID!): Vote
+  postMovie(title: String!, year: Int!, rating: Float!, actors: [ID!]!): Movie!
+  postActor(name: String!, birthday: String!, country: String!, directors: [ID!]!): Actor!
+  postDirector(name: String!, birthday: String!, country: String!): Director!
+  createUser(name: String!, password: String!): AuthPayload
+  login(name: String!, password: String!): AuthPayload
 }
 
-type Link {
+type Movie {
   id: ID!
-  description: String!
-  url: String!
-  postedBy: User
-  votes: [Vote!]!
+  title: String!
+  year: Int!
+  rating: Float!
+  scoutbase_rating: Float @isAuthenticated
+  actors: [Actor!]!
+}
+
+type Actor {
+  id: ID!
+  name: String!
+  birthday: String!
+  country: String
+  directors: [Director!]!
+}
+
+type Director {
+  id: ID!
+  name: String!
+  birthday: String!
+  country: String
 }
 
 type AuthPayload {
@@ -31,20 +47,18 @@ type AuthPayload {
 type User {
   id: ID!
   name: String!
-  email: String!
-  links: [Link!]!
 }
 
-type Subscription {
-  newLink: Link
-  newVote: Vote
-}
+# type Subscription {
+#   newLink: Link
+#   newVote: Vote
+# }
 
-type Vote {
-  id: ID!
-  link: Link!
-  user: User!
-}
+# type Vote {
+#   id: ID!
+#   link: Link!
+#   user: User!
+# }
 
 enum LinkOrderByInput {
   description_ASC

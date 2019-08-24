@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "NODE_ENV=production node src/index.js",
-    "dev": "NODE_ENV=development nodemon src/index.js",
+    "prisma": "cd database && prisma deploy",
+    "dev": "NODE_ENV=development nodemon ./src/index.js",
     "test": "NODE_ENV=development mocha test/*.test.js --reporter spec --exit --full-trace",
     "git": "func() { git add . && git commit -m \"BUILD - $1\" && git push origin master; }; func"
   },
@@ -13,6 +14,8 @@
     "bcryptjs": "^2.4.3",
     "graphql-yoga": "^1.17.4",
     "jsonwebtoken": "^8.5.1",
+    "nodemon": "^1.19.1",
+    "prisma": "^1.34.6",
     "prisma-client-lib": "^1.34.0"
   }
 }

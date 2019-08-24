@@ -1,22 +1,22 @@
 const { GraphQLServer } = require('graphql-yoga')
-const { prisma } = require('./generated/prisma-client')
+const { prisma } = require('../database/generated/prisma-client')
+const graphQLEndpoint = '/graphql';
 
 const Query = require('./resolvers/Query')
 const Mutation = require('./resolvers/Mutation')
-const User = require('./resolvers/User')
-const Link = require('./resolvers/Link')
-const Subscription = require('./resolvers/Subscription')
-const Vote = require('./resolvers/Vote')
+const Actor = require('./resolvers/Actor')
+const Movie = require('./resolvers/Movie')
+const Director = require('./resolvers/Director')
 
 const resolvers = {
   Query,
   Mutation,
-  User,
-  Link,
-  Subscription,
-  Vote
+  Actor,
+  Movie,
+  Director
 }
 
+const directiveResolvers = require('./resolvers/Directives')
 // 3
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
@@ -28,4 +28,13 @@ const server = new GraphQLServer({
     }
   },
 })
-server.start(() => console.log(`Server is running on http://localhost:4000`))
+
+server.use((req, res, next) => {
+  if (req.path.startsWith(graphQLEndpoint)) return next();
+ return res.status(404).json({message: 'This route does not exist'})
+});
+
+server.start({
+  endpoint: '/graphql',
+  playground: '/graphql',
+}, () => console.log(`Server is running on http://localhost:4000`))

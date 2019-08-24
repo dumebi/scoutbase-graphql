@@ -5,21 +5,25 @@ var typeDefs = require("./prisma-schema").typeDefs;
 
 var models = [
   {
-    name: "Link",
-    embedded: false
-  },
-  {
     name: "User",
     embedded: false
   },
   {
-    name: "Vote",
+    name: "Actor",
+    embedded: false
+  },
+  {
+    name: "Director",
+    embedded: false
+  },
+  {
+    name: "Movie",
     embedded: false
   }
 ];
 exports.Prisma = prisma_lib_1.makePrismaClientClass({
   typeDefs,
   models,
-  endpoint: `https://eu1.prisma.sh/jude-dike-6f327b/hackernews-node/dev`
+  endpoint: `http://localhost:4466`
 });
 exports.prisma = new exports.Prisma();

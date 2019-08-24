@@ -1,8 +1,12 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { APP_SECRET, getUserId } = require('../utils')
+const { APP_SECRET } = require('../utils')
 
-async function signup(parent, args, context, info) {
+async function createUser(parent, args, context, info) {
+  const userExists = await context.prisma.user({ name: `${args.name}` })
+  if (userExists) {
+    throw new Error('User already exists')
+  }
   // 1
   const password = await bcrypt.hash(args.password, 10)
   // 2
@@ -22,7 +26,7 @@ async function signup(parent, args, context, info) {
 
 async function login(parent, args, context, info) {
   // 1
-  const user = await context.prisma.user({ email: args.email })
+  const user = await context.prisma.user({ name: `${args.name}` })
   if (!user) {
     throw new Error('No such user found')
   }
@@ -42,38 +46,63 @@ async function login(parent, args, context, info) {
   }
 }
 
-function post(parent, args, context, info) {
-  const userId = getUserId(context)
-  return context.prisma.createLink({
-    url: args.url,
-    description: args.description,
-    postedBy: { connect: { id: userId } },
+async function postMovie(parent, args, context, info) {
+  // 2
+  const movieExists = await context.prisma.$exists.movie({ title: `${args.title}` })
+  if (movieExists) {
+    throw new Error(`Already created : ${args.title}`)
+  }
+  let actors = args.actors
+  actors = actors.map(actor => {
+    return  { id: actor }
+  })
+
+  // 3
+  return context.prisma.createMovie({
+    title: args.title,
+    year: args.year,
+    rating: args.rating,
+    actors: { connect: actors }
   })
 }
 
-async function vote(parent, args, context, info) {
-  // 1
-  const userId = getUserId(context)
-
+async function postActor(parent, args, context, info) {
   // 2
-  const linkExists = await context.prisma.$exists.vote({
-    user: { id: userId },
-    link: { id: args.linkId },
-  })
-  if (linkExists) {
-    throw new Error(`Already voted for link: ${args.linkId}`)
+  const actorExists = await context.prisma.$exists.movie({ name: `${args.name}` })
+  if (actorExists) {
+    throw new Error(`Already created : ${args.name}`)
   }
+  let directors = args.directors
+  directors = directors.map(director => {
+    return  { id: director }
+  })
 
   // 3
-  return context.prisma.createVote({
-    user: { connect: { id: userId } },
-    link: { connect: { id: args.linkId } },
+  return context.prisma.createActor({
+    name: args.name,
+    birthday: args.birthday,
+    country: args.country,
+    directors: { connect: directors }
+  })
+}
+
+async function postDirector(parent, args, context, info) {
+  const directorExists = await context.prisma.$exists.movie({ name: `${args.name}` })
+  if (directorExists) {
+    throw new Error(`Already created : ${args.name}`)
+  }
+
+  return context.prisma.createDirector({
+    name: args.name,
+    birthday: args.birthday,
+    country: args.country
   })
 }
 
 module.exports = {
-  signup,
+  createUser,
   login,
-  post,
-  vote
+  postMovie,
+  postActor,
+  postDirector
 }
