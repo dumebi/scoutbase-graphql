@@ -7,86 +7,26 @@
 5. Open another terminal to the root of the project and run `yarn run dev`
 6. Open your web browser to `http://localhost:4000`
 
-# Back-end task of Code Challenge for Scoutbase
+# Code Challenge for Scoutbase
 
-This task is for demonstrating your understanding of HTTP, GraphQL, Node.js and general API practices.
+If you’re reading this, then you’ve applied for a position at Scoutbase.
 
-Instructions:
+This directory includes two subdirectories:
 
-1. Implement a Node.js-based server with raw `http`, Koa or Express.
-2. Add a `/graphql` endpoint serving the apollo-server or any other GraphQL implementation.
-3. Schema must be able to return proper response for the following public query:
+- `front-end` with focus on React, SSR, Apollo & `styled-components`
+- `back-end` with focus on SQL, Node.js, GraphQL
 
-```graphql
-{
-  movies {
-    title
-    year
-    rating
-    actors {
-      name
-      birthday
-      country
-      directors {
-        name
-        birthday
-        country
-      }
-    }
-  }
-}
-```
+You can do one or you can do two.
 
-4. Add support for the following mutation:
-```graphql
-mutation createUser($username: String, $password: String) {
-  createUser(username: $username, password: $password) {
-    token
-    user {
-      id
-      name
-    }
-  }
-}
-```
+## Instructions
 
-5. To expand on the number four, add a mutation-based authentication that accepts:
-```graphql
-mutation login($username: String, $password: String) {
-  login(username: $username, password: $password) {
-    token
-    user {
-      id
-      name
-    }
-  }
-}
-```
+You have received this directory within the .zip archive.
 
-6. Authenticated users may request additional fields for the query used earlier. New `scoutbase_rating` field must return the a random string between 5.0-9.0:
+1. Create a repo out of the directory with this `README.md` in the root of it.
+2. Work on either task following the guidelines in `README.md` within chosen directory.
+3. Follow best practices of saving changes to the repo.
+4. Upload the repo to your personal Github account and share it with two collaborators:
+  1. `Yaass` username – Yassin Askar, co-founder of Scoutbase
+  2. `kuka` username – Kuanysh, consultant
+5. Expect a response within 10 working days after sharing the task, you’ll be contacted with the info you’ve provided during initial registration.
 
-```graphql
-{
-  movies {
-    scoutbase_rating
-
-    title
-    year
-    rating
-    actors {
-      name
-      birthday
-      country
-      directors {
-        name
-        birthday
-        country
-      }
-    }
-  }
-}
-```
-
-7. `/graphql` must be accessible for external clients.
-
-8. End.
